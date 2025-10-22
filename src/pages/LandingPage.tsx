@@ -120,32 +120,51 @@ const LandingPage = () => {
                 <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">Core principles that guide Heddle's architecture for performance and reliability.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <FeatureCard title="Declarative Orchestration">
-                    Heddle emphasizes defining data dependencies (the "what") over imperative control flow (the "how"). Workflows are compiled into optimized Directed Acyclic Graphs (DAGs).
-                </FeatureCard>
-                <FeatureCard title="Best of Both Worlds">
-                    Use Heddle's declarative pipelines to orchestrate the "what," and call your language (Python, Go, etc.) to control the "how." Get full access to imperative logic like loops and conditionals right where you need them.
-                </FeatureCard>
-                <FeatureCard title="Integrated with (PRQL)">
-                    Natively incorporates PRQL (Pipelined Relational Query Language) for complex data shaping (joins, aggregations) directly within the orchestration flow.
-                </FeatureCard>
                 <FeatureCard title="Simple Syntax, Rapid Prototyping">
-                    The minimal, declarative syntax is easy to learn. Interactively build and test your pipelines by inspecting the data state after any step.
+                    The minimal, declarative syntax is easy to learn. Interactively build and
+                    test your pipelines by inspecting the data state after any step.
                 </FeatureCard>
+
+                <FeatureCard title="Best of Both Worlds">
+                    Use Heddle's declarative pipelines to orchestrate the "what" and your
+                    host language (Python, Go, etc.) to control the "how." Get full access to
+                    imperative logic like loops and conditionals right where you need them.
+                </FeatureCard>
+
+                <FeatureCard title="Native PRQL Integration">
+                    Natively use the power of PRQL (Pipelined Relational Query Language)
+                    for complex joins, aggregations, and data shaping directly within your
+                    orchestration flow.
+                </FeatureCard>
+
+                <FeatureCard title="AI-Ready by Design">
+                    The declarative, typed structure makes Heddle an ideal target for
+                    generative AI, enabling LLM-powered code generation, optimization, and
+                    automation.
+                </FeatureCard>
+
+                <FeatureCard title="Optimized DAG Execution">
+                    Heddle compiles your dependencies into a Directed Acyclic Graph (DAG).
+                    Instead of writing imperative control flow, you define data relationships,
+                    allowing Heddle's runtime to manage the execution plan, optimize throughput,
+                    and run independent tasks concurrently.
+                </FeatureCard>
+
+                <FeatureCard title="High-Performance Columnar Core">
+                    Heddle's runtime is optimized for columnar data, enabling vectorized
+                    (SIMD) execution for extreme efficiency and high-speed processing.
+                </FeatureCard>
+
                 <FeatureCard title="Embedded Core Architecture">
-                    Designed as an embeddable execution engine, not a monolithic runtime. Integrates seamlessly with (Python, Go, Rust, NodeJS).
+                    Heddle is a lightweight, embeddable engine, not a monolithic runtime.
+                    Integrate it seamlessly with your existing applications in Python, Go, Rust,
+                    and Node.js.
                 </FeatureCard>
-                <FeatureCard title="Columnar-Native Execution">
-                    The type system and runtime are optimized for columnar data, facilitating vectorized execution (SIMD optimization) and high efficiency.
-                </FeatureCard>
-                <FeatureCard title="Languages (SDKs)">
-                    Tier 1 support (Zero-Copy) for Rust, C++, Go, and Python. Tier 2 (Wasm) for Node.js and JVM.
-                </FeatureCard>
-                <FeatureCard title="Connectivity">
-                    Expanding stdlib for databases (PostgreSQL, ClickHouse), messaging (Kafka, NATS), and formats (Parquet, Avro).
-                </FeatureCard>
-                <FeatureCard title="AI Tooling Ready">
-                    The declarative nature makes Heddle an ideal Intermediate Representation (IR) for generative AI tooling and LLM-powered optimization.
+
+                <FeatureCard title="Extensible Connectivity">
+                    Connect to anything. An expanding standard library provides connectors
+                    for databases (PostgreSQL, ClickHouse), messaging (Kafka, NATS),
+                    and file formats (Parquet, Avro).
                 </FeatureCard>
             </div>
         </Section>
