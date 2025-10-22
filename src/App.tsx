@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { CodeBlock } from './components/CodeBlock';
 import { GitHubIcon } from './components/Icons';
+import logo from './logo_small.png';
 
 // --- Code Snippets ---
 const heroCode = `import "io/http" as http
@@ -139,7 +140,11 @@ const App: React.FC = () => {
             <header className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
                 <div className="container mx-auto px-6 md:px-8">
                     <div className="flex justify-between items-center h-16">
-                        <a href="#" className="text-2xl font-black text-slate-900">Heddle</a>
+                        <a href="#" className="flex items-center gap-2 text-2xl font-black text-slate-900">
+                            <img src={logo} alt="Heddle Logo" className="h-8 w-8" />
+                            Heddle
+                        </a>
+                        
                         <nav className="hidden md:flex items-center gap-6 font-medium text-slate-700">
                            {navLinks}
                         </nav>
