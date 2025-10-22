@@ -133,12 +133,12 @@ const App: React.FC = () => {
 
     const navLinks = (
         <>
-            <a href="#" className="hover:text-teal-600 transition-colors">Docs</a>
+            {/* <a href="#" className="hover:text-teal-600 transition-colors">Docs</a>
             <a href="#" className="hover:text-teal-600 transition-colors">Ecosystem</a>
             <a href="#" className="hover:text-teal-600 transition-colors">Community</a>
             <a href="#" className="flex items-center gap-1 hover:text-teal-600 transition-colors">
                 <GitHubIcon className="w-5 h-5" /> GitHub
-            </a>
+            </a> */}
         </>
     );
 
@@ -158,7 +158,7 @@ const App: React.FC = () => {
                         </nav>
                         <div className="hidden md:block">
                             <a href="#" className="bg-teal-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-teal-700 transition-colors">
-                                Get Started
+                                Play Ground
                             </a>
                         </div>
                         <div className="md:hidden">
@@ -174,7 +174,7 @@ const App: React.FC = () => {
                         <nav className="flex flex-col items-center gap-4 p-4 font-medium text-slate-700">
                            {navLinks}
                            <a href="#" className="bg-teal-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-teal-700 transition-colors w-full text-center">
-                                Get Started
+                                Play Ground
                             </a>
                         </nav>
                     </div>
@@ -194,11 +194,11 @@ const App: React.FC = () => {
                             </p>
                             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                                 <a href="#" className="bg-teal-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-teal-700 transition-colors text-lg">
-                                    Get Started
+                                    Play Ground
                                 </a>
-                                <a href="#" className="bg-slate-200 text-slate-800 font-semibold px-6 py-3 rounded-md hover:bg-slate-300 transition-colors text-lg">
+                                {/* <a href="#" className="bg-slate-200 text-slate-800 font-semibold px-6 py-3 rounded-md hover:bg-slate-300 transition-colors text-lg">
                                     Read the Docs
-                                </a>
+                                </a> */}
                             </div>
                         </div>
                         <div>
@@ -331,11 +331,11 @@ const App: React.FC = () => {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                         <p>&copy; 2025 Heddle Project Contributors</p>
                         <div className="flex gap-6">
-                            <a href="#" className="hover:text-white transition-colors">Documentation</a>
+                            {/* <a href="#" className="hover:text-white transition-colors">Documentation</a>
                             <a href="#" className="hover:text-white transition-colors">GitHub</a>
                             <a href="#" className="hover:text-white transition-colors">Community</a>
                             <a href="#" className="hover:text-white transition-colors">Blog</a>
-                            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+                            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a> */}
                         </div>
                     </div>
                 </div>
