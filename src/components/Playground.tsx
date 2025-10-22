@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import Editor from '@monaco-editor/react';
 import dagre from 'dagre';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
@@ -11,6 +11,11 @@ import ReactFlow, {
   Controls,
   Background,
 } from 'reactflow';
+import {
+    PanelGroup,
+    Panel,
+    PanelResizeHandle,
+} from 'react-resizable-panels';
 import 'reactflow/dist/style.css';
 
 const initialNodes = [
@@ -135,37 +140,41 @@ workflow process_users {
 }`;
 
   return (
-    <div>
-      {/* <h1>Playground</h1> */}
-      <div style={{ display: 'flex' }}>
-        <div style={{ flex: 1, border: '1px solid black', padding: '10px' }}>
-          <h2>Code Editor</h2>
-          <Editor
-            height="90vh"
-            defaultLanguage="heddle"
-            defaultValue={initialCode}
-          />
-        </div>
-        <div style={{ flex: 1, border: '1px solid black', padding: '10px' }}>
-          <h2>DAG View</h2>
-          <ReactFlowProvider>
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              fitView
-            >
-              <Background />
-              <Controls />
-            </ReactFlow>
-          </ReactFlowProvider>
-        </div>
-        <div style={{ flex: 1, border: '1px solid black', padding: '10px' }}>
-          <DebugView />
-        </div>
-      </div>
+    <div style={{ height: 'calc(100vh - 4rem)' }}>
+      <PanelGroup direction="horizontal">
+        <Panel>
+            <PanelGroup direction="vertical">
+                <Panel>
+                    <Editor
+                    height="100%"
+                    defaultLanguage="heddle"
+                    defaultValue={initialCode}
+                    options={{ minimap: { enabled: false } }}
+                    />
+                </Panel>
+                <PanelResizeHandle style={{ height: '4px', background: '#eee' }} />
+                <Panel defaultSize={30}>
+                    <DebugView />
+                </Panel>
+            </PanelGroup>
+        </Panel>
+        <PanelResizeHandle style={{ width: '4px', background: '#eee' }} />
+        <Panel defaultSize={25}>
+            <ReactFlowProvider>
+                <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    // fitView
+                >
+                    <Background />
+                    <Controls />
+                </ReactFlow>
+            </ReactFlowProvider>
+        </Panel>
+      </PanelGroup>
     </div>
   );
 };

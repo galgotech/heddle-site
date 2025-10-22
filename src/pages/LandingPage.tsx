@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import 'github-markdown-css/github-markdown.css';
 import { CodeBlock } from '../components/CodeBlock';
 import Mermaid from '../components/Mermaid';
+import Section from '../components/Section';
 
 import readme from '../README.md?raw';
 
@@ -21,13 +22,6 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, children }) => (
     </div>
 );
 
-const Section: React.FC<{className?: string, children: React.ReactNode}> = ({ className = '', children }) => (
-    <section className={`py-16 md:py-24 ${className}`}>
-        <div className="container mx-auto px-6 md:px-8">
-            {children}
-        </div>
-    </section>
-);
 
 // --- Code Snippets ---
 const heroCode = `import "io/http" as http
