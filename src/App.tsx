@@ -30,15 +30,18 @@ workflow process_users {
         | log.info
 }`;
 
-const prqlCode = `step users = db.query { sql: "SELECT * FROM users" }
-step events = kafka.read { topic: "user_events" }
+const prqlCode = `import "stream/db" as db
+import "stream/kafka" as kafka
+
+step users_read = db.query { sql: "SELECT * FROM users" }
+step events_read = kafka.read { topic: "user_events" }
 
 workflow user_analytics {
     // 'events' output is piped into the PRQL block as 'input'
-    events | (
-        # PRQL Block
-        from input # Refers to the Frame piped from the 'events' step
-        join users (user_id == id) # Refers to the Frame output of the 'users' step
+    let users = users_read
+    events_read | (
+        from events_read
+        join users (user_id == id)
         group {users.country} (
             aggregate {
                 event_count = count
@@ -171,7 +174,7 @@ const App: React.FC = () => {
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <div className="text-center lg:text-left">
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight">
-                                High-Throughput, Resilient Data Orchestration.
+                                Simple<br /> High-Throughput<br />Resilient<br />Data Orchestration.
                             </h1>
                             <p className="mt-6 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto lg:mx-0">
                                 Heddle is a statically-typed, declarative language engineered for constructing efficient data integration and processing pipelines, built on a high-performance, columnar-native execution engine.
@@ -194,21 +197,24 @@ const App: React.FC = () => {
                 {/* Why Heddle? */}
                 <Section className="bg-slate-50">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900">The Heddle Design Tenets</h2>
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900">The Heddle Design</h2>
                         <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">Core principles that guide Heddle's architecture for performance and reliability.</p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                         <FeatureCard title="Declarative Orchestration">
                             Heddle emphasizes defining data dependencies (the "what") over imperative control flow (the "how"). Workflows are compiled into optimized Directed Acyclic Graphs (DAGs).
                         </FeatureCard>
+                        <FeatureCard title="Embedded Core Architecture">
+                            Designed as an embeddable execution engine, not a monolithic runtime. Integrates seamlessly with (Python, Go, Rust, NodeJS).
+                        </FeatureCard>
+                        <FeatureCard title="Leverage Imperative Control">
+                            Declarative pipelines can call functions in your host language (Python, Go, etc.), giving you full access to imperative control flow like if/else, and loops, for complex logic.
+                        </FeatureCard>
+                        <FeatureCard title="Integrated with (PRQL)">
+                            Natively incorporates PRQL (Pipelined Relational Query Language) for complex data shaping (joins, aggregations) directly within the orchestration flow.
+                        </FeatureCard>
                         <FeatureCard title="Columnar-Native Execution">
                             The type system and runtime are optimized for columnar data, facilitating vectorized execution (SIMD optimization) and high efficiency.
-                        </FeatureCard>
-                        <FeatureCard title="Embedded Core Architecture">
-                            Designed as an embeddable execution engine, not a monolithic runtime. Integrates seamlessly with host environments (Python, Go, Rust).
-                        </FeatureCard>
-                        <FeatureCard title="Integrated Transformation (PRQL)">
-                            Natively incorporates PRQL (Pipelined Relational Query Language) for complex data shaping (joins, aggregations) directly within the orchestration flow.
                         </FeatureCard>
                     </div>
                 </Section>
