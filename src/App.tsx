@@ -1,8 +1,16 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import 'github-markdown-css/github-markdown.css';
 import { CodeBlock } from './components/CodeBlock';
+import Mermaid from './components/Mermaid';
 import { GitHubIcon } from './components/Icons';
+import mermaid from 'mermaid';
+
 import logo from './logo_small.png';
+import readme from './README.md?raw';
+
 
 // --- Code Snippets ---
 const heroCode = `import "io/http" as http
@@ -209,14 +217,14 @@ const App: React.FC = () => {
                         <FeatureCard title="Declarative Orchestration">
                             Heddle emphasizes defining data dependencies (the "what") over imperative control flow (the "how"). Workflows are compiled into optimized Directed Acyclic Graphs (DAGs).
                         </FeatureCard>
-                        <FeatureCard title="Embedded Core Architecture">
-                            Designed as an embeddable execution engine, not a monolithic runtime. Integrates seamlessly with (Python, Go, Rust, NodeJS).
-                        </FeatureCard>
                         <FeatureCard title="Leverage Imperative Control">
-                            Declarative pipelines can call functions in your host language (Python, Go, etc.), giving you full access to imperative control flow like if/else, and loops, for complex logic.
+                            Declarative pipelines can call functions in your language (Python, Go, etc.), giving you full access to imperative control flow like if/else, and loops, for complex logic.
                         </FeatureCard>
                         <FeatureCard title="Integrated with (PRQL)">
                             Natively incorporates PRQL (Pipelined Relational Query Language) for complex data shaping (joins, aggregations) directly within the orchestration flow.
+                        </FeatureCard>
+                        <FeatureCard title="Embedded Core Architecture">
+                            Designed as an embeddable execution engine, not a monolithic runtime. Integrates seamlessly with (Python, Go, Rust, NodeJS).
                         </FeatureCard>
                         <FeatureCard title="Columnar-Native Execution">
                             The type system and runtime are optimized for columnar data, facilitating vectorized execution (SIMD optimization) and high efficiency.
@@ -273,7 +281,7 @@ const App: React.FC = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                         <div className="p-6">
-                            <h3 className="text-xl font-bold text-slate-900 mb-2">Host Languages (SDKs)</h3>
+                            <h3 className="text-xl font-bold text-slate-900 mb-2">Languages (SDKs)</h3>
                             <p className="text-slate-600">Tier 1 support (Zero-Copy) for Rust, C++, Go, and Python. Tier 2 (Wasm) for Node.js and JVM.</p>
                         </div>
                         <div className="p-6">
@@ -283,6 +291,35 @@ const App: React.FC = () => {
                         <div className="p-6">
                             <h3 className="text-xl font-bold text-slate-900 mb-2">AI Tooling Ready</h3>
                             <p className="text-slate-600">The declarative nature makes Heddle an ideal Intermediate Representation (IR) for generative AI tooling and LLM-powered optimization.</p>
+                        </div>
+                    </div>
+                </Section>
+
+                <Section>
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Heddle Language</h2>
+                        {/* <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">Core principles that guide Heddle's architecture for performance and reliability.</p> */}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-1">
+                        <div className="markdown-body">
+                            <Markdown
+                                remarkPlugins={[ remarkGfm ]}
+                                components={{
+                                    code({ node, inline, className, children, ...props }) {
+                                        const match = /language-(\w+)/.exec(className || '');
+                                        if (match && match[1] === 'mermaid') {
+                                            return <Mermaid chart={String(children)} />;
+                                        }
+                                        return (
+                                            <code className={className} {...props}>
+                                                {children}
+                                            </code>
+                                        );
+                                    },
+                                }}
+                            >
+                                {readme}
+                            </Markdown>
                         </div>
                     </div>
                 </Section>

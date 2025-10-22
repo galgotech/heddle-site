@@ -1,5 +1,3 @@
-# Heddle Language
-
 ## Part 1: The User's Guide (What & How)
 
 ### 1\. Introduction
@@ -12,7 +10,7 @@ Heddle is a statically-typed, declarative, data-flow orchestration language engi
 
 Before diving into the specification, let's look at a complete, simple Heddle workflow. This example fetches a list of users, filters for active users, and selects just their names and emails.
 
-```heddle
+```
 import "io/http" as http
 import "core/transform" as transform
 import "core/log" as log
@@ -44,14 +42,14 @@ workflow process_users {
     fetch_users
         | filter_active
         | ( // 4. Use PRQL for data transformation
-            from input
+            from fetch_users
             select name, email
           ) -> UserOutput
         | log.info // (Assumes 'log.info' step is defined)
 
     fetch_users
         | ( // 5. Use PRQL for data transformation and filter
-            from input
+            from fetch_users
             select name, email
             where active = true
           ) -> UserOutput
@@ -71,9 +69,10 @@ This example shows the four core concepts you'll use:
 Heddle is governed by the following architectural principles:
 
 1.  **Declarative Orchestration**: Heddle emphasizes the definition of data dependencies (the "what") over imperative control flow (the "how").
-2.  **Columnar-Native Execution**: The Heddle type system and runtime are optimized for processing columnar and unstructured data. This design facilitates vectorized execution (SIMD optimization).
-3.  **Embedded Core Architecture**: Heddle is designed as an embeddable execution engine, not a monolithic runtime. It integrates seamlessly with host environments (e.g., Python, Go, Rust).
-4.  **Integrated Transformation**: Heddle natively incorporates PRQL (Pipelined Relational Query Language) for complex data shaping (e.g., joins, aggregations).
+2.  **Leverage Imperative Control**: Declarative pipelines can call functions in your language (Python, Go, etc.), giving you full access to imperative control flow like if/else, and loops, for complex logic.
+3.  **Integrated Transformation**: Heddle natively incorporates PRQL (Pipelined Relational Query Language) for complex data shaping (e.g., joins, aggregations).
+4.  **Embedded Core Architecture**: Heddle is designed as an embeddable execution engine, not a monolithic runtime. It integrates seamlessly with host environments (e.g., Python, Go, Rust).
+5.  **Columnar-Native Execution**: The Heddle type system and runtime are optimized for processing columnar and unstructured data. This design facilitates vectorized execution (SIMD optimization).
 
 #### 1.4. Scope
 
@@ -101,7 +100,7 @@ This section covers the fundamental syntax for writing Heddle code.
 
 Heddle employs a hierarchical module system. The `import` statement brings external modules into the current scope.
 
-```heddle
+```
 // Syntax: import "<module_path>" [as <alias>]
 
 import "io/http" as http
@@ -112,7 +111,7 @@ import "core/transform"
 
 The `workflow` block defines a distinct execution boundary and a local namespace. It serves as the entry point for execution.
 
-```heddle
+```
 workflow UserProcessingPipeline {
   // Step definitions and pipeline declarations
 }
@@ -122,7 +121,7 @@ workflow UserProcessingPipeline {
 
 The `step` keyword declares a configured, immutable instance of a component. This is where you define *what* a piece of logic does.
 
-```heddle
+```
 // Syntax: step <identifier> = <module>.<component> { <configuration_block> }
 
 step fetch_users = http.get {
@@ -139,7 +138,7 @@ Steps can then be used inside a `workflow` to build a pipeline.
 
 The pipeline operator (`|`) defines the primary synchronous data flow. It directs the output Frame of the left-hand side (LHS) expression to become the primary input Frame of the right-hand side (RHS) expression.
 
-```heddle
+```
 workflow run_fetch {
     fetch_users | validate_schema | load_into_warehouse
 }
@@ -182,7 +181,7 @@ Complex types allow for nested and hierarchical data structures.
 
 The `schema` keyword defines a reusable type definition for a Frame structure (the "shape" of your dataframe).
 
-```heddle
+```
 schema UserProfile = {
   user_id: int,
   username: string,
@@ -197,7 +196,7 @@ schema UserProfile = {
 
 `step` declarations can (and should) be annotated with input and output schemas to enforce type contracts.
 
-```heddle
+```
 // Syntax: step <identifier> [ (<InputSchema>) ] -> <OutputSchema> = <module>.<component> { ... }
 
 // Output annotation: Ensures http.get returns data conforming to UserProfile
@@ -228,18 +227,16 @@ PRQL blocks can access data in two ways:
 1.  **Pipelined Input**: Data passed via `|` is accessed using the reserved `input` keyword.
 2.  **Workflow Context**: Data from any other `step` is accessed by its name.
 
-<!-- end list -->
-
-```heddle
-step users = db.query { sql: "SELECT * FROM users" }
-step events = kafka.read { topic: "user_events" }
+```
+step users_read = db.query { sql: "SELECT * FROM users" }
+step events_read = kafka.read { topic: "user_events" }
 
 workflow user_analytics {
     // 'events' output is piped into the PRQL block as 'input'
-    events | (
-        # PRQL Block
-        from input # Refers to the Frame piped from the 'events' step
-        join users (user_id == id) # Refers to the Frame output of the 'users' step
+    let users = users_read
+    events_read | (
+        from events_read
+        join users (user_id == id)
         group {users.country} (
             aggregate {
                 event_count = count
@@ -259,7 +256,7 @@ Heddle provides granular mechanisms for handling exceptions.
 
 The `?` operator can be suffixed to a `step` invocation within a pipeline to intercept errors *from that specific invocation*.
 
-```heddle
+```
 // Syntax: <step_invocation> ? <error_handler_step>
 
 step process_data = external.api_call { ... }
@@ -280,7 +277,7 @@ workflow process {
 
 A workflow can define a global error handler (`? <handler>`) that intercepts any exceptions *not* handled by a local `?` operator.
 
-```heddle
+```
 import "std/error" as error
 
 error slack_alert = error.alert.slack { 
