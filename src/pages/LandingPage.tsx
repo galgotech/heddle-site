@@ -210,28 +210,6 @@ const LandingPage = () => {
             </div>
         </Section>
         
-        {/* Ecosystem */}
-        <Section>
-            <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Built to Integrate</h2>
-                <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">Heddle is designed to fit seamlessly into the modern data stack.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div className="p-6">
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">Languages (SDKs)</h3>
-                    <p className="text-slate-600">Tier 1 support (Zero-Copy) for Rust, C++, Go, and Python. Tier 2 (Wasm) for Node.js and JVM.</p>
-                </div>
-                <div className="p-6">
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">Connectivity</h3>
-                    <p className="text-slate-600">Expanding <code>stdlib</code> for databases (PostgreSQL, ClickHouse), messaging (Kafka, NATS), and formats (Parquet, Avro).</p>
-                </div>
-                <div className="p-6">
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">AI Tooling Ready</h3>
-                    <p className="text-slate-600">The declarative nature makes Heddle an ideal Intermediate Representation (IR) for generative AI tooling and LLM-powered optimization.</p>
-                </div>
-            </div>
-        </Section>
-
         <Section>
             <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Heddle Language</h2>
