@@ -1,5 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import Editor from '@monaco-editor/react';
+import dagre from 'dagre';
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { AgGridReact } from 'ag-grid-react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -9,7 +12,6 @@ import ReactFlow, {
   Background,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import dagre from 'dagre';
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: 'fetch_users' } },
@@ -23,6 +25,14 @@ const initialEdges = [
     { id: 'e2-3', source: '2', target: '3' },
     { id: 'e3-4', source: '3', target: '4' },
 ];
+
+const columnDefs = [
+    { field: 'id', headerName: 'ID' },
+    { field: 'name', headerName: 'Name' },
+    { field: 'active', headerName: 'Active' },
+];
+
+ModuleRegistry.registerModules([ AllCommunityModule ]);
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -70,26 +80,12 @@ const DebugView = () => {
   ];
 
   return (
-    <div>
+    <div className="ag-theme-alpine" style={{ height: '100%', width: '100%' }}>
       <h2>Debug View</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>name</th>
-            <th>active</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row) => (
-            <tr key={row.id}>
-              <td>{row.id}</td>
-              <td>{row.name}</td>
-              <td>{row.active.toString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <AgGridReact
+            rowData={data}
+            columnDefs={columnDefs}
+        />
       <div>
         <button>Prev</button>
         <button>Next</button>
