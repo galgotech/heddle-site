@@ -54,7 +54,7 @@ workflow process_active_users {
 }`;
 
 const imperativeCode = `// 1. Import imperative logic from your host (e.g., Python, Go)
-import "hugginface/models" as ml
+import "fhub.dev/deeplearning/models" as ml
 import "std/database" as db
 
 // 2. Define steps that wrap this logic
