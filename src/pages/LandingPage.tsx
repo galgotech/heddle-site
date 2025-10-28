@@ -136,7 +136,7 @@ const LandingPage = () => {
                         This separation makes logic trivial to audit, whether when code is <strong>LLM-generated</strong>, with high-performance, distributed execution.
                     </p>
                     <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="#" className="bg-teal-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-teal-700 transition-colors text-lg">
+                        <a href="/playground" className="bg-teal-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-teal-700 transition-colors text-lg">
                             Play Ground
                         </a>
                         <a href="#readme" className="bg-slate-200 text-slate-800 font-semibold px-6 py-3 rounded-md hover:bg-slate-300 transition-colors text-lg">
@@ -221,22 +221,15 @@ const LandingPage = () => {
                 </FeatureCard>
 
                 <FeatureCard title="Efficient Distributed Execution">
-                    <p>
                     Heddle compiles workflows into a Directed Acyclic Graph (DAG). The runtime optimizes this graph for concurrency and <strong>reuses in-memory function instances</strong> across workflows, enabling extremely low-latency, high-throughput processing.
-                    </p>
                 </FeatureCard>
 
                 <FeatureCard title="High-Performance Columnar Core">
-                    <p>
                     Heddle is columnar-native. Its runtime uses vectorized (SIMD) execution and is designed for <strong>data locality</strong>, pushing computation to your data to avoid unnecessary network movement and maximize throughput.
-                    </p>
                 </FeatureCard>
 
                 <FeatureCard title="Secure & Portable Runtimes">
-                    <p>
                     Imperative <i>step</i> logic is compiled to <strong>WebAssembly (WASM)</strong>. This provides a secure, sandboxed, and high-performance execution model that is completely portable. Embed the Heddle runtime in your Python, Go, or Rust application with identical behavior.
-                    </p>
-                    {/* <CodeBlock code={errorHandlingCode} language="heddle" /> */}
                 </FeatureCard>
             </div>
         </Section>
@@ -251,16 +244,12 @@ const LandingPage = () => {
             </div>
             <div className="grid md:grid-cols-2 gap-8 items-start">
                 <FeatureCard title="Embedded Core Architecture">
-                    <p>
                     Heddle is a library, not a framework. Integrate it seamlessly with your existing applications in Python, Go, Rust, and Node.js.
                     Call Heddle workflows as a function, or run the Heddle core as a standalone server.
-                    </p>
                 </FeatureCard>
                 <FeatureCard title="Extensible Connectivity">
-                    <p>
                     Connect to anything. An expanding standard library provides connectors for databases (PostgreSQL, ClickHouse), messaging (Kafka, NATS), and file formats (Parquet, Avro).
                     The simple <i>import</i> system makes it easy to add your own.
-                    </p>
                 </FeatureCard>
             </div>
         </Section>

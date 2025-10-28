@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from "react-router"
+import { Route, Routes } from "react-router"
 import { GitHubIcon } from './components/Icons';
 
 import logo from './logo_small.png';
@@ -59,7 +59,6 @@ const App: React.FC = () => {
     );
 
     return (
-        <BrowserRouter>
             <div className="min-h-screen flex flex-col">
                 {/* Header */}
                 <header className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
@@ -99,6 +98,7 @@ const App: React.FC = () => {
                 </header>
 
                 <main className="flex-grow">
+                    {/* <LandingPage /> */}
                     <Routes>
                         <Route path="/" element={<LandingPage />} />
                         <Route path="/playground" element={<PlaygroundPage />} />
@@ -122,7 +122,6 @@ const App: React.FC = () => {
                     </div>
                 </footer>
             </div>
-        </BrowserRouter>
     );
 };
 
