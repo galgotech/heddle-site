@@ -1,401 +1,185 @@
-## Part 1: The User's Guide (What & How)
 
-### 1\. Introduction
+Heddle is a declarative, statically-typed language designed for orchestrating data workflows. It provides a functional data-flow syntax (pipelines) to compose and manage imperative logic (steps).
 
-#### 1.1. Overview
+Its core purpose is to separate the flow of data from the implementation of tasks, enabling the construction of resilient, testable, and high-performance data systems. It is not a general-purpose programming language; it is a high-level orchestration and glue language that runs on a dedicated, high-performance columnar runtime.
 
-Heddle is a statically-typed, declarative, data-flow orchestration language engineered for constructing high-throughput, resilient data integration and processing pipelines. It provides a specialized Domain-Specific Language (DSL) for composing heterogeneous components into coherent execution graphs. Heddle's architecture is predicated on a high-performance, in-memory columnar data format, ensuring efficiency, type safety, and optimized execution.
+## Core Principles
 
-#### 1.2. Heddle by Example: A First Workflow
+1. **Functional Orchestration**: Workflows are defined as functional pipelines. Data flows immutably from one step to the next.
+2. **Imperative Implementation**: Individual units of work (I/O, business logic) are abstracted into step definitions, which are implemented in a host language (e.g., Python, Go, Rust) and compiled to WebAssembly.
+3. **Declarative Data Flow**: You define the relationships between steps, not the execution order. Heddle's runtime compiles this into an optimized Directed Acyclic Graph (DAG) for concurrent execution.
+4. **First-Class Data Transformation**: Data shaping (filtering, joining, aggregating) is a native language feature via embedded PRQL blocks.
+5. **Static Typing**: Data integrity is enforced at compile-time. All data flowing between steps must conform to a defined schema.
 
-Before diving into the specification, let's look at a complete, simple Heddle workflow. This example fetches a list of users, filters for active users, and selects just their names and emails.
+## Language Constructs
 
+### 1\. `import`
+
+Imports an external module (containing `step` implementations) and binds it to a local identifier.
+
+```heddle
+import "fhub/http" as http
+import "std/database" as db
 ```
-import "io/http" as http
-import "core/transform" as transform
-import "core/log" as log
 
-// 1. Define the shape of our data (Schema)
+### 2\. `schema`
+
+A `schema` defines a named data contract. It specifies the "shape" (columns and types) of data. All `step` inputs and outputs are type-checked against these schemas.
+
+* **Primitive Types**: `int`, `string`, `float`, `bool`, `timestamp`
+* **Complex Types**: Nested `schema` definitions (structs) are supported.
+
+```heddle
 schema User = {
-    id: int,
-    name: string,
-    email: string,
-    active: bool
-}
-
-schema UserOutput = {
-    name: string,
-    email: string
-}
-
-// 2. Define the steps (Components)
-step fetch_users -> User = http.get {
-    url: "https://api.example.com/users"
-}
-
-step filter_active (User) -> User = transform.filter {
-    condition: "active == true"
-}
-
-// 3. Define the main workflow
-workflow process_users {
-    fetch_users
-        | filter_active
-        | ( // 4. Use PRQL for data transformation
-            from fetch_users
-            select name, email
-          ) -> UserOutput
-        | log.info // (Assumes 'log.info' step is defined)
-
-    fetch_users
-        | ( // 5. Use PRQL for data transformation and filter
-            from fetch_users
-            select name, email
-            where active = true
-          ) -> UserOutput
-        | log.info // (Assumes 'log.info' step is defined)
-}
-```
-
-This example shows the four core concepts you'll use:
-
-1.  **`schema`**: Defining the shape of your data.
-2.  **`step`**: Defining a configured, reusable action.
-3.  **`workflow`**: Naming the execution and defining the flow.
-4.  **`|` (pipe)**: Chaining steps together to pass data.
-
-#### 1.3. Design Tenets
-
-Heddle is governed by the following architectural principles:
-
-1.  **Declarative Orchestration**: Heddle emphasizes the definition of data dependencies (the "what") over imperative control flow (the "how").
-2.  **Leverage Imperative Control**: Declarative pipelines can call functions in your language (Python, Go, etc.), giving you full access to imperative control flow like if/else, and loops, for complex logic.
-3.  **Integrated Transformation**: Heddle natively incorporates PRQL (Pipelined Relational Query Language) for complex data shaping (e.g., joins, aggregations).
-4.  **Embedded Core Architecture**: Heddle is designed as an embeddable execution engine, not a monolithic runtime. It integrates seamlessly with host environments (e.g., Python, Go, Rust).
-5.  **Columnar-Native Execution**: The Heddle type system and runtime are optimized for processing columnar and unstructured data. This design facilitates vectorized execution (SIMD optimization).
-
-#### 1.4. Scope
-
-Heddle is optimized for scenarios requiring high-performance orchestration of structured data, including ETL/ELT pipelines, real-time event stream processing, and backend service coordination.
-
-#### 1.5. Terminology
-
-| Term | Definition |
-| :------- | :------ |
-| Component  | An abstract, side-effecting function provided by a module (e.g., `http.get`). |
-| Step  | A named, configured, immutable instance of a Component (e.g., `fetch_users`).  |
-| Workflow | A namespaced execution boundary containing a collection of Steps. |
-| Pipeline |  The explicit flow of data between Steps, defined using the `\|` operator. |
-| Workflow Context | The runtime state that persists the output (a Frame) of every executed Step. |
-| Host Language | The external environment (e.g., Python) in which the Heddle Runtime is embedded. |
-| Heddle Core Runtime (HCR) | The execution engine responsible for running Heddle code. |
-
------
-
-### 2\. The Heddle Language (Core Syntax)
-
-This section covers the fundamental syntax for writing Heddle code.
-
-#### 2.1. Modules and Imports
-
-Heddle employs a hierarchical module system. The `import` statement brings external modules into the current scope.
-
-```
-// Syntax: import "<module_path>" [as <alias>]
-
-import "io/http" as http
-import "core/transform"
-```
-
-#### 2.2. Workflows
-
-The `workflow` block defines a distinct execution boundary and a local namespace. It serves as the entry point for execution.
-
-```
-workflow UserProcessingPipeline {
-  // Step definitions and pipeline declarations
-}
-```
-
-#### 2.3. Steps (Component Instantiation)
-
-The `step` keyword declares a configured, immutable instance of a component. This is where you define *what* a piece of logic does.
-
-```
-// Syntax: step <identifier> = <module>.<component> { <configuration_block> }
-
-step fetch_users = http.get {
-    url: "https://api.example.com/v1/users",
-    headers: {
-        "Authorization": "Bearer <token>"
-    }
-}
-```
-
-Steps can then be used inside a `workflow` to build a pipeline.
-
-#### 2.4. The Pipeline Operator (`|`)
-
-The pipeline operator (`|`) defines the primary synchronous data flow. It directs the output Frame of the left-hand side (LHS) expression to become the primary input Frame of the right-hand side (RHS) expression.
-
-```
-workflow run_fetch {
-    fetch_users | validate_schema | load_into_warehouse
-}
-```
-
------
-
-### 3\. The Type System (Core Data)
-
-Heddle employs a strong, static type system to ensure data integrity. This system ensures compile-time verification of data contracts.
-
-#### 3.1. Primitive Types
-
-Primitive types represent fixed-size scalar values suitable for efficient columnar storage.
-
-| Heddle Type    | Description      | Physical Representation (Default) |
-| :-------       | :------          | :------ |
-| `int`          | Signed integer   | `Int64` (Explicit `int8`, `int16`, `int32`, `int64` supported) |
-| `unit`         | Unsigned integer | `UInt64` (Explicit `uint8`, `uint16`, `uint32`, `uint64` supported)
-| `float`        | Floating-point number | `Float64` (Explicit `float32`, `float64` supported) |
-| `string`       | Variable-length text |   UTF-8 encoded bytes |
-| `bool`         | Boolean value | Packed bit array or Int8 equivalent |
-| `timestamp`    | Date and time | Nanoseconds since epoch (with optional timezone metadata) |
-| `date`         |  Calendar date | Days since epoch |
-| `time`         | Time of day | Nanoseconds since midnight |
-| `bytes`        | Raw binary data | Variable-length byte array |
-| `ecimal<P, S>` | Fixed-precision decimal | `Decimal128` or `Decimal256` |
-
-#### 3.2. Complex Types (Container Types)
-
-Complex types allow for nested and hierarchical data structures.
-
-| Heddle Type       | Description |
-| :-------          | :------ |
-| `list<T>`,        | An ordered, homogeneous sequence of elements of type T. |
-| `map<K, V>`       | A collection of key-value pairs. Keys (K) must be a primitive, non-nullable type. |
-| `{field: T, ...}` | A Struct (Record). An inline definition of a fixed, ordered collection of named fields. |
-
-#### 3.3. Schema Declaration
-
-The `schema` keyword defines a reusable type definition for a Frame structure (the "shape" of your dataframe).
-
-```
-schema UserProfile = {
-  user_id: int,
+  id: int,
   username: string,
-  metadata: {
-      created_at: timestamp,
-      tags: list<string>
-  }
+  active: bool
+}
+
+schema DetailedUser = {
+  user_info: User,
+  last_login: timestamp
 }
 ```
 
-#### 3.4. Type Annotations and Static Analysis
 
-`step` declarations can (and should) be annotated with input and output schemas to enforce type contracts.
+### 3\. `step`
 
-```
-// Syntax: step <identifier> [ (<InputSchema>) ] -> <OutputSchema> = <module>.<component> { ... }
+A `step` is the atomic unit of work in Heddle. It is a named wrapper around an imperative function (the "module reference"). It defines its input and output data contracts.
 
-// Output annotation: Ensures http.get returns data conforming to UserProfile
-step get_users -> UserProfile = http.get { ... }
+* `step` [identifier]
+* `[input_type]?`: Optional. The schema of the data this step expects. If omitted, it takes no input from the pipeline.
+* `[output_type]`: The schema of the data this step produces.
+* `= [module_reference]`: The implementation (e.g., http.get, db.query).
+* `[dict]`: A static configuration block passed to the module.
 
-// Input/Output annotation: Input acts as an assertion on data entering the step.
-step calculate_scores (UserProfile) -> UserScore = transform.prql {
-    query: "from input | derive score = metrics.login_count * 1.5"
+```heddle
+// A step with no input that produces data
+step fetch_users -> User = http.get {
+  url: "[https://api.example.com/users](https://api.example.com/users)"
+}
+
+// A step that takes data, processes it, and returns data
+step validate_user User -> User = my_logic.validate {
+  min_length: 4
 }
 ```
 
-The Heddle compiler verifies schema compatibility, preventing runtime failures due to incompatible data structures.
+### 4\. `handler`
 
------
+A `handler` is a special type of `step` used for declarative error handling. It is a dedicated pipeline that executes only if the step it's attached to fails.
 
-### 4\. Building a Complete Workflow (Features)
+* It's `input_type` must match the `input_type` of the step it handles.
+* It's `output_type` must match the `output_type` of the step it handles (allowing it to provide a default/fallback value) or a generic Error schema.
 
-Now we combine syntax and types with features to build robust pipelines.
-
-#### 4.1. Data Transformation (PRQL Integration)
-
-Heddle delegates complex relational data shaping to embedded PRQL blocks, denoted by parentheses `(...)`.
-
-##### 4.1.1. Contextual Access in PRQL
-
-PRQL blocks can access data in two ways:
-
-1.  **Pipelined Input**: Data passed via `|` is accessed using the reserved `input` keyword.
-2.  **Workflow Context**: Data from any other `step` is accessed by its name.
-
-```
-step users_read = db.query { sql: "SELECT * FROM users" }
-step events_read = kafka.read { topic: "user_events" }
-
-workflow user_analytics {
-    // 'events' output is piped into the PRQL block as 'input'
-    let users = users_read
-    events_read | (
-        from events_read
-        join users (user_id == id)
-        group {users.country} (
-            aggregate {
-                event_count = count
-            }
-        )
-    ) | update_analytics_dashboard
+```heddle
+// A handler that logs the error and returns an empty User dataframe
+handler log_and_swallow User -> User = error.log_and_return {
+  message: "Failed to process user, swallowing error.",
+  return_value: []
 }
 ```
 
-The Heddle compiler analyzes these references to build the correct execution graph (DAG).
+### 5\. `workflow`
 
-#### 4.2. Resilience: Error Handling
+A `workflow` is the primary execution entry point. It defines a graph of `step` executions using a pipeline-based syntax.
 
-Heddle provides granular mechanisms for handling exceptions.
+* **Global Error Handler**: A workflow can define a global error handler using `? [handler_identifier]`.
+* **Pipelines (`|`)**: The pipe operator `|` passes the output of the previous step as the input to the next step.
+* **Error Handling (`?`)**: The ? operator attaches a local handler to a step. If `my_step` fails, `my_handler` is executed instead. Its output is then passed down the pipeline.
+* **PRQL Blocks**: PRQL code can be placed directly in a pipeline, enclosed in `(...)`. The data from the previous step is available as the input table.
 
-##### 4.2.1. Local Error Handling (Try-Catch Operator)
-
-The `?` operator can be suffixed to a `step` invocation within a pipeline to intercept errors *from that specific invocation*.
-
-```
-// Syntax: <step_invocation> ? <error_handler_step>
-
-step process_data = external.api_call { ... }
-
-// Define a step to handle the error
-error log_and_swallow = error.log {
-    message: "API call failed, continuing with empty data"
-    output: [] // Returns an empty frame to continue the pipeline
-}
-
-workflow process {
-    // If process_data fails, log_and_swallow is executed instead.
-    process_data ? log_and_swallow | finalize
+```heddle
+workflow login_flow ? global_error_handler {
+  // A simple pipeline
+  fetch_users
+    | validate_user ? log_and_swallow // Attach local handler
+    | (
+        from input
+        filter active == true
+        select username
+      )
+    | log.info
 }
 ```
 
-##### 4.2.2. Global Error Handlers
+### 6\. `let` Bindings
 
-A workflow can define a global error handler (`? <handler>`) that intercepts any exceptions *not* handled by a local `?` operator.
+Within a `workflow`, `let` binds the result of a pipeline to a named identifier. This allows for:
 
+* **Branching**: Using a single data source for multiple, independent pipelines.
+* **Joining**: Referencing the result of a previous pipeline in a PRQL block.
+
+```heddle
+workflow process_users {
+  // 1. Fetch data once
+  let all_users = fetch_users
+
+  // 2. Branch A: Process active users
+  all_users
+    | (from input filter active == true)
+    | db.write_active
+
+  // 3. Branch B: Process inactive users
+  all_users
+    | (from input filter active == false)
+    | db.write_inactive
+}
 ```
+
+### 7\. Data Primitives
+
+Heddle's configuration blocks and future `dataframe` literals use standard data primitives.
+
+* Dictionaries: `{ key: "value", number: 123 }`
+* Lists: `[ "a", "b", "c" ]`
+* Pimitives: `string`, `number`, `bool`, `null`
+
+
+## Example: Full Workflow
+
+This example defines schemas, imports logic, and creates a workflow that fetches users, filters them with PRQL, and logs the result.
+
+```heddle
+// 1. Imports
+import "fhub/http" as http
+import "std/log" as log
 import "std/error" as error
 
-error slack_alert = error.alert.slack { 
-    message: "FATAL: MainPipeline failed"
-    // No return, so the workflow terminates
+// 2. Schemas
+schema User = {
+  id: int,
+  username: string,
+  active: bool
 }
 
-// slack_alert is now the global handler for this workflow
-workflow MainPipeline ? slack_alert {
-    step_one | step_two | step_three
+schema Username = {
+  username: string
+}
+
+// 3. Steps
+step fetch_all_users -> User = http.get {
+  url: "[https://api.example.com/users](https://api.example.com/users)"
+}
+
+step log_usernames Username -> Username = log.info {
+  message: "Processed users"
+}
+
+// 4. Error Handler
+handler handle_fetch_error -> User = error.log_and_return {
+  message: "Failed to fetch users. Returning empty list.",
+  return_value: [] // Returns an empty User dataframe
+}
+
+// 5. Workflow
+workflow get_active_users {
+  fetch_all_users ? handle_fetch_error
+    | (
+        from input
+        filter active == true
+        select username
+      )
+    | log_usernames
 }
 ```
-
------
-
-## Part 2: The Implementer's Guide (How it Works)
-
------
-
-This part of the document details the internal architecture and runtime execution model of Heddle.
-
-### 5\. Architecture and Execution Model
-
-#### 5.1. Embedded Core Architecture
-
-Heddle operates on a dual-environment model, strictly segregating the declarative orchestration layer (managed by the HCR) from the imperative execution layer (provided by the Host Language).
-
-```mermaid
-graph TD
-    subgraph Host Environment [Host Environment]
-        A[Host Application Logic]
-        B[Host-Provided Components]
-    end
-    subgraph HCR [Heddle Core Runtime]
-        C[Workflow Scheduler/Executor]
-        D[Compiler & DAG Optimizer]
-        E[Vectorized Execution Engine]
-        F[PRQL Transpiler & Executor]
-        G[(Memory / Nvme)]
-    end
-
-    A -- Invoke Workflow (API/SDK) --> D
-    D -- Optimized DAG --> C
-    C -- FFI Boundary (BDI Protocol) --> B
-    C -- Native Execution (Fast Path) --> E
-    E <--> F
-    E <--> G
-    C <--> G
-```
-
-The HCR manages the workflow lifecycle, while the Host Environment invokes the HCR and provides implementations for external components.
-
-#### 5.2. Execution Model (DAG)
-
-A Heddle `workflow` is compiled into a Directed Acyclic Graph (DAG). Nodes represent Steps, and edges represent data dependencies. The HCR executes the DAG by performing a topological sort and scheduling nodes for execution concurrently as their dependencies are satisfied.
-
-#### 5.3. Workflow Context and Non-Linear Flows
-
-The **Workflow Context** is an immutable, append-only key-value store. When a `step` executes, its output (a Frame) is persisted in the Workflow Context, indexed by the step's identifier. This mechanism enables subsequent steps to reference the results of any previously executed step, facilitating complex, non-linear execution topologies (e.g., fan-out/fan-in).
-
-#### 5.4. Performance Model (Dual Path Execution)
-
-Heddle optimizes execution by maximizing operations within the HCR.
-
-1.  **Fast Path (Vectorized Execution)**: Operations executed entirely within the HCR (e.g., PRQL, built-in modules). These leverage the columnar format and vectorized processing (SIMD).
-2.  **Slow Path (Host Interop)**: Execution that requires calling back into the Host Environment (the "Imperative Escape Hatch").
-
------
-
-### 6\. Advanced Runtime Features
-
-#### 6.1. Compilation and Optimization
-
-The HCR compiles Heddle source code into an optimized execution DAG. Key optimization strategies include:
-
-  * **Operator Fusion**: Combining multiple sequential operations (e.g., adjacent filters) into a single execution unit to minimize intermediate data materialization.
-  * **Predicate/Projection Pushdown**: Pushing filtering (predicates) and column selection (projections) as close to the data source as possible.
-  * **Automatic Parallelization**: Analyzing the DAG to identify independent branches that can be executed concurrently.
-
-#### 6.2. Memory Management and Spilling (Out-of-Core Execution)
-
-To ensure robustness when processing datasets that exceed available RAM, the HCR employs:
-
-  * **Buffer Pooling**: Minimizing memory allocation overhead by reusing standardized memory buffers.
-  * **Data Spilling**: Transparently moving intermediate Frames from RAM to fast local storage (e.g., NVMe SSD) when memory pressure is high.
-
------
-
-### 7\. Observability
-
-#### 7.1. Execution Modes
-
-  * **Production Mode (Default)**: Prioritizes maximum throughput. The compiler applies aggressive optimizations. Intermediate states may be ephemeral.
-  * **Debug Mode**: Prioritizes observability. Operator fusion is disabled. The runtime guarantees intermediate states are materialized and preserved in the Workflow Context.
-
-#### 7.2. Introspection API
-
-When in Debug Mode, the HCR exposes an Introspection API (via the Host SDK) that allows tools to:
-
-1.  Inspect the compiled DAG.
-2.  Set breakpoints on steps.
-3.  Query the Workflow Context to view the exact Frame state at any point.
-4.  Trace data lineage.
-
-### 8\. Ecosystem
-
-#### 8.1. Ecosystem and Roadmap
-
-  * **Package Management**: Development of a package manager for distributing Heddle modules and schemas.
-  * **Runtime Implementations and SDKs**:
-      * **Tier 1 (Zero-Copy)**: Rust, C++, Go, Python (with native extensions).
-      * **Tier 2 (Wasm/Serialization)**: Node.js/TypeScript, Java/JVM.
-  * **Core Module Expansion**: Development of a `stdlib` for databases (PostgreSQL, ClickHouse), messaging (Kafka, NATS), and file formats (Parquet, Avro).
-
-#### 8.2. AI-Powered Tooling
-
-The declarative, strongly-typed nature of Heddle makes it an ideal Intermediate Representation (IR) for generative AI tooling, facilitating LLM-powered code generation and optimization.
-
-#### 8.3. Research and Collaboration
-
-Heddle invites community and academic collaboration, particularly in areas such as advanced compiler optimizations, cost-based optimization, and formalizing the type and effect systems.
