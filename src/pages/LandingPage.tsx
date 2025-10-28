@@ -26,7 +26,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, children }) => (
 // --- Code Snippets ---
 
 const heroCode = `import "io/http" as http
-import "core/transform" as transform
+import "std/transform" as transform
 import "std/log" as log
 
 // 1. Define the shape of your data
@@ -54,7 +54,7 @@ workflow process_active_users {
 }`;
 
 const imperativeCode = `// 1. Import imperative logic from your host (e.g., Python, Go)
-import "python/models" as ml
+import "hugginface/models" as ml
 import "std/database" as db
 
 // 2. Define steps that wrap this logic
@@ -76,7 +76,7 @@ workflow process_payment {
 }`;
 
 
-const prqlCode = `import "stream/db" as db
+const prqlCode = `import "std/database" as db
 import "stream/kafka" as kafka
 import "std/dashboard" as dash
 
@@ -106,16 +106,16 @@ step process_data = external.api_call { ... }
 // Define a handler: a dedicated pipeline for errors
 handler log_and_swallow = error.handler {
     log.error { message: "API call failed, continuing." }
-    
-    // Returns an empty dataframe to continue the flow
-    return []
 }
 
-workflow main_pipeline {
-    // If process_data fails, Heddle executes the
-    // 'log_and_swallow' handler and pipes its
-    // output to 'finalize'.
-    process_data ? log_and_swallow | finalize
+// Define a handler: a dedicated pipeline for errors
+handler log_workflow = error.handler {
+    log.error { message: "API call failed, continuing." }
+}
+
+workflow main_pipeline ? log_workflow {
+    // If process_data fails, Heddle executes the 'log_and_swallow' handler
+    process_data ? log_and_swallow
 }`;
 
 
@@ -195,10 +195,11 @@ const LandingPage = () => {
                 <div>
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Declarative Error Handling</h2>
                     <p className="mt-4 text-lg text-slate-600">
-                        Handle failures gracefully with the <i>?</i> operator.
+                        Handle failures gracefully with the `?` operator.
                     </p>
                     <p className="mt-4 text-lg text-slate-600">
-                        Declaratively attach error-handling <i>handler</i> pipelines to any step. This ensures your workflow can recover or fail gracefully without cluttering your core logic with <i>try/catch</i> blocks.
+                        Declaratively attach error-handling `handler` pipelines to any `step` or `workflow`.
+                        This ensures your `workflow` can recover or fail gracefully without cluttering your core logic with <i>try/catch</i> blocks.
                     </p>
                 </div>
                 <div>

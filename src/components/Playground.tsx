@@ -114,7 +114,7 @@ const Playground = () => {
       );
 
   const initialCode = `import "io/http" as http
-import "core/transform" as transform
+import "std/transform" as transform
 
 // 1. Define the shape of our data
 schema User = {
