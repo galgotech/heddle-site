@@ -52,7 +52,7 @@ const App: React.FC = () => {
             {/* <a href="#" className="hover:text-teal-600 transition-colors">Ecosystem</a> */}
             {/* <a href="#" className="hover:text-teal-600 transition-colors">Community</a> */}
             <a href="mailto:contact@fhub.dev" className="hover:text-teal-600 transition-colors">Contact</a>
-            <a href="https://github.com/galgotech/heddle" target="_blank" className="flex items-center gap-1 hover:text-teal-600 transition-colors">
+            <a href="https://github.com/galgotech/heddle-lang" target="_blank" className="flex items-center gap-1 hover:text-teal-600 transition-colors">
                 <GitHubIcon className="w-5 h-5" /> GitHub
             </a>
         </>
