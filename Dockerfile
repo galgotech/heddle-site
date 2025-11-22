@@ -1,32 +1,23 @@
-# Stage 1: Build the React application
-FROM node:18-alpine AS build
+FROM node:24-alpine AS build
 
 WORKDIR /app
+RUN mkdir playground
 
-# Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
+COPY playground/package.json playground/package-lock.json ./playground
+RUN npm install \
+    && cd playground && npm install
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application source code
 COPY . .
+COPY playground ./playground
 
-# Build the application
-RUN npm run build
+RUN npm run build \
+    && cd playground && npm run build
 
-# Stage 2: Serve the application with Nginx
 FROM nginx:1.21.3-alpine
-
-# Copy the build output from the build stage
 COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy the nginx configuration file
+COPY --from=build /app/playground/dist /usr/share/nginx/html/playground
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80
 EXPOSE 80
-
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
 
