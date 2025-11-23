@@ -1,18 +1,16 @@
 services:
   ssr:
     build: .
-      #    ports:
-      #      - "8080:5173"
     restart: unless-stopped
     networks:
       - traefik_proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.heddle.rule=Host(`heddle.fhub.dev`)"
-      - "traefik.http.routers.heddle.entrypoints=https"
-      - "traefik.http.routers.heddle.tls=true"
-      - "traefik.http.routers.heddle.tls.certresolver=le"
-      - "traefik.http.services.heddle.loadbalancer.server.port=5173"
+      - "traefik.http.routers.heddle-main.rule=Host(`heddle.fhub.dev`)"
+      - "traefik.http.routers.heddle-main.entrypoints=https"
+      - "traefik.http.routers.heddle-main.tls=true"
+      - "traefik.http.routers.heddle-main.tls.certresolver=le"
+      - "traefik.http.services.heddle-main.loadbalancer.server.port=5173"
     environment:
       - NODE_ENV=production
 
@@ -24,11 +22,11 @@ services:
       - traefik_proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.heddle.rule=Host(`heddle.fhub.dev`) && PathPrefix(`/playground`)"
-      - "traefik.http.routers.heddle.entrypoints=https"
-      - "traefik.http.routers.heddle.tls=true"
-      - "traefik.http.routers.heddle.tls.certresolver=le"
-      - "traefik.http.services.heddle.loadbalancer.server.port=80"
+      - "traefik.http.routers.heddle-playground.rule=Host(`heddle.fhub.dev`) && PathPrefix(`/playground`)"
+      - "traefik.http.routers.heddle-playground.entrypoints=https"
+      - "traefik.http.routers.heddle-playground.tls=true"
+      - "traefik.http.routers.heddle-playground.tls.certresolver=le"
+      - "traefik.http.services.heddle-playground.loadbalancer.server.port=80"
     environment:
       - NODE_ENV=production
 
