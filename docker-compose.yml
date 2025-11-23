@@ -1,7 +1,18 @@
 version: '3.8'
 services:
-  web:
+  ssr:
     build: .
     ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=production
+
+  playground:
+    build:
+      context: ./playground
+      dockerfile: Dockerfile
+    ports:
       - "8080:80"
+    environment:
+      - NODE_ENV=production
 
