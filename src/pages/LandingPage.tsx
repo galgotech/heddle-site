@@ -136,7 +136,7 @@ const LandingPage = () => {
                         This separation makes logic trivial to audit, whether when code is <strong>LLM-generated</strong>, with high-performance, and distributed execution.
                     </p>
                     <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="/playground" className="bg-teal-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-teal-700 transition-colors text-lg">
+                        <a href="/playground" target="_blank" className="bg-teal-600 text-white font-semibold px-6 py-3 rounded-md hover:bg-teal-700 transition-colors text-lg">
                             Play Ground
                         </a>
                         <a href="#readme" className="bg-slate-200 text-slate-800 font-semibold px-6 py-3 rounded-md hover:bg-slate-300 transition-colors text-lg">

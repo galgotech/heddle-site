@@ -73,7 +73,7 @@ const App: React.FC = () => {
                             {navLinks}
                         </nav>
                         <div className="hidden md:block">
-                            <a href="/playground" className="bg-teal-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-teal-700 transition-colors">
+                            <a href="/playground" target="_blank" className="bg-teal-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-teal-700 transition-colors">
                                 Play Ground
                             </a>
                         </div>
