@@ -1,9 +1,18 @@
-version: '3.8'
 services:
   ssr:
     build: .
-    ports:
-      - "5173:5173"
+      #    ports:
+      #      - "8080:5173"
+    restart: unless-stopped
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heddle.rule=Host(`heddle.fhub.dev`)"
+      - "traefik.http.routers.heddle.entrypoints=https"
+      - "traefik.http.routers.heddle.tls=true"
+      - "traefik.http.routers.heddle.tls.certresolver=le"
+      - "traefik.http.services.heddle.loadbalancer.server.port=5173"
     environment:
       - NODE_ENV=production
 
@@ -11,8 +20,18 @@ services:
     build:
       context: ./playground
       dockerfile: Dockerfile
-    ports:
-      - "8080:80"
+    networks:
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heddle.rule=Host(`heddle.fhub.dev`) && PathPrefix(`/playground`)"
+      - "traefik.http.routers.heddle.entrypoints=https"
+      - "traefik.http.routers.heddle.tls=true"
+      - "traefik.http.routers.heddle.tls.certresolver=le"
+      - "traefik.http.services.heddle.loadbalancer.server.port=80"
     environment:
       - NODE_ENV=production
 
+networks:
+  traefik_proxy:
+    external: true
