@@ -102,9 +102,12 @@
                         </h1>
 
                         <p class="text-lg md:text-xl text-slate-600 leading-relaxed mb-10 max-w-2xl mx-auto">
-                            Heddle is a hybrid-paradigm language designed to orchestrate logic.
-                            Seamlessly combining functional and imperative paradigms and is built to
-                            be easy to read and modify for both humans and AI agents.
+                            Heddle is a hybrid-paradigm language designed to <strong>orchestrate logic</strong>. By
+                            combining
+                            <strong>functional</strong>
+                            and <strong>imperative</strong> paradigms, its simple design makes it easy to read, write,
+                            and
+                            understand. A language for both <strong>Engineer</strong> and <strong>AI agents</strong>.
                         </p>
                     </div>
                 </section>
@@ -128,20 +131,26 @@
                                 Heddle's syntax is designed to be expressive and concise, separating
                                 <strong>what to do</strong> (functional) from <strong>how to do it</strong>
                                 (imperative).
-                                It is based on simple declarations, pipes, pattern matching, PRQL, and row-safe error
+                                It is based on simple declarations, pipes, reactive pattern matching, PRQL,
+                                and row-safe error
                                 handling.
 
                             </p>
                         </div>
 
                         <!-- CSS Tab Inputs (Hidden) -->
-                        <input type="radio" id="tab-reactive" name="playground-tabs" checked class="hidden">
+                        <input type="radio" id="tab-pattern" name="playground-tabs" checked class="hidden">
+                        <input type="radio" id="tab-reactive" name="playground-tabs" class="hidden">
                         <input type="radio" id="tab-prql" name="playground-tabs" class="hidden">
                         <input type="radio" id="tab-error" name="playground-tabs" class="hidden">
 
                         <!-- Tab Buttons Label Bar -->
                         <div
-                            class="tabs-buttons flex gap-2 justify-center mb-10 overflow-x-auto pb-2 scrollbar-hide relative z-10 px-4">
+                            class="tabs-buttons flex flex-wrap gap-2 justify-center mb-10 relative z-10 px-4">
+                            <label for="tab-pattern"
+                                class="cursor-pointer px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap border bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-900 select-none">
+                                Pattern Matching
+                            </label>
                             <label for="tab-reactive"
                                 class="cursor-pointer px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap border bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-900 select-none">
                                 API Endpoint
@@ -158,6 +167,97 @@
 
                         <!-- Dual Code Panels Container -->
                         <div class="tabs-contents relative z-10">
+
+                            <!-- TAB 4: Pattern Matching -->
+                            <div id="content-pattern" class="hidden grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                                <!-- Left: Heddle Logic -->
+                                <div class="flex flex-col min-w-0">
+                                    <div
+                                        class="flex items-center justify-between px-5 py-3.5 bg-slate-900 text-slate-300 rounded-t-xl border-t border-x border-slate-800">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                                            <span
+                                                class="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Heddle
+                                                Code</span>
+                                        </div>
+                                        <span class="text-xs font-mono text-slate-500">main.he</span>
+                                    </div>
+                                    <div
+                                        class="flex-grow border-x border-b border-slate-800 rounded-b-xl overflow-hidden bg-slate-900/40 p-5 font-mono text-sm leading-relaxed text-slate-300 overflow-x-auto">
+                                        <pre><code><span class="text-teal-400">import</span> <span class="text-indigo-300">"cmp"</span>
+<span class="text-teal-400">import</span> <span class="text-indigo-300">"io"</span>
+
+<span class="text-teal-400">flow</span> main {
+  <span class="text-slate-500">// Pattern matching based on Go function tags</span>
+  result = <span class="text-indigo-300">"a"</span> | cmp.compare(<span class="text-indigo-300">"b"</span>) {
+    less(val) {
+      val | io.print()
+      <span class="text-teal-400">return</span> val
+    }
+    equals(val) {
+      val | io.print()
+      <span class="text-teal-400">return</span> val
+    }
+    greater(val) {
+      val | io.print()
+      <span class="text-teal-400">return</span> val
+    }
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                                <!-- Right: Go Companion -->
+                                <div class="flex flex-col min-w-0">
+                                    <div
+                                        class="flex items-center justify-between px-5 py-3.5 bg-slate-900 text-slate-300 rounded-t-xl border-t border-x border-slate-800">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                                            <span
+                                                class="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Go
+                                                Code</span>
+                                        </div>
+                                        <span class="text-xs font-mono text-slate-500">cmp.go</span>
+                                    </div>
+                                    <div
+                                        class="flex-grow border-x border-b border-slate-800 rounded-b-xl overflow-hidden bg-slate-900/40 p-5 font-mono text-sm leading-relaxed text-slate-300 overflow-x-auto">
+                                        <pre><code><span class="text-teal-400">package</span> cmp
+
+<span class="text-teal-400">import</span> (...)
+
+<span class="text-teal-400">type</span> ComparTag <span class="text-teal-300">string</span>
+
+<span class="text-teal-400">const</span> (
+	Less    ComparTag = <span class="text-indigo-300">"less"</span>
+	Equals  ComparTag = <span class="text-indigo-300">"equals"</span>
+	Greater ComparTag = <span class="text-indigo-300">"greater"</span>
+)
+
+<span class="text-teal-400">func</span> Compare(x any, y any) (interaction.Match[ComparTag, any], <span class="text-teal-300">error</span>) {
+	xf, ok1 := convertToFloat(x)
+	yf, ok2 := convertToFloat(y)
+	<span class="text-teal-400">if</span> ok1 && ok2 {
+		<span class="text-teal-400">if</span> xf &lt; yf {
+			<span class="text-teal-400">return</span> interaction.Match[ComparTag, any]{Tag: Less, Val: xf}, <span class="text-teal-400">nil</span>
+		} <span class="text-teal-400">else</span> <span class="text-teal-400">if</span> xf &gt; yf {
+			<span class="text-teal-400">return</span> interaction.Match[ComparTag, any]{Tag: Greater, Val: xf}, <span class="text-teal-400">nil</span>
+		} <span class="text-teal-400">else</span> {
+			<span class="text-teal-400">return</span> interaction.Match[ComparTag, any]{Tag: Equals, Val: xf}, <span class="text-teal-400">nil</span>
+		}
+	}
+	xs := fmt.Sprintf(<span class="text-indigo-300">"%v"</span>, x)
+	ys := fmt.Sprintf(<span class="text-indigo-300">"%v"</span>, y)
+	<span class="text-teal-400">if</span> xs &lt; ys {
+		<span class="text-teal-400">return</span> interaction.Match[ComparTag, any]{Tag: Less, Val: xs}, <span class="text-teal-400">nil</span>
+	} <span class="text-teal-400">else</span> <span class="text-teal-400">if</span> xs &gt; ys {
+		<span class="text-teal-400">return</span> interaction.Match[ComparTag, any]{Tag: Greater, Val: xs}, <span class="text-teal-400">nil</span>
+	} <span class="text-teal-400">else</span> {
+		<span class="text-teal-400">return</span> interaction.Match[ComparTag, any]{Tag: Equals, Val: xs}, <span class="text-teal-400">nil</span>
+	}
+}
+</code></pre>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- TAB 1: Reactive API Endpoint -->
                             <div id="content-reactive" class="hidden grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
@@ -400,11 +500,11 @@ http_server = http.server {
                 <div class="w-full max-w-7xl mx-auto px-4 md:px-8">
                     <div class="text-center mb-16 max-w-3xl mx-auto">
                         <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">
-                            Compiler and Runtime Architecture
+                            Compiler & VM Architecture
                         </h2>
                         <p class="mt-4 text-lg md:text-xl text-slate-600 leading-relaxed">
-                            The Heddle framework is built as a complete compiler and reactive runtime execution stack
-                            written entirely in Go.
+                            The Heddle framework is built as a complete compiler and virtual machine execution stack
+                            written entirely in Go, adhering to Clean Architecture principles.
                         </p>
                     </div>
 
@@ -413,10 +513,11 @@ http_server = http.server {
                             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Lexer & Parser</h4>
+                                    GoASTParser Interop</h4>
                                 <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    Converts Heddle source text into a stream of tokens, which the parser processes into
-                                    a strongly-typed Abstract Syntax Tree (AST) representing logic and variables.
+                                    The frontend semantic analyzer parses Go companion sources using standard AST
+                                    libraries. It maps snake_case Heddle instructions to PascalCase Go targets,
+                                    resolving types before execution.
                                 </p>
                             </div>
                         </div>
@@ -425,10 +526,23 @@ http_server = http.server {
                             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Semantic Analysis</h4>
+                                    Columnar Frame Buffers</h4>
                                 <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    Performs type inference and validation on the AST, resolving native Go function
-                                    signatures and package metadata to guarantee type safety.
+                                    Data flows through Heddle in columnar `Frame` segments, wrapping
+                                    `NestedListContainer` elements. Slices and structs transition smoothly to Go
+                                    representation without duplicate allocations.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">Memory
+                                    Arenas</h4>
+                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                                    VM query processing runs within dedicated memory-isolated arenas. Slices and tables
+                                    are allocated, utilized, and garbage-collected in bulk to minimize GC pauses.
                                 </p>
                             </div>
                         </div>
@@ -437,10 +551,10 @@ http_server = http.server {
                             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Codegen & IR</h4>
+                                    Stack-Based Virtual Machine</h4>
                                 <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    Translates the validated AST into an Intermediate Representation (IR) and compiles
-                                    it down to idiomatic Go target code for native compiler optimization.
+                                    A fast, thread-safe virtual machine interprets linearized IR bytecode. It handles
+                                    concurrent timer tick sequences, background event loops, and HTTP listeners cleanly.
                                 </p>
                             </div>
                         </div>
@@ -449,35 +563,11 @@ http_server = http.server {
                             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Runtime Engine</h4>
+                                    Complete LSP Integration</h4>
                                 <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    The Heddle framework is built as a complete compiler and reactive runtime execution
-                                    stack written entirely in Go.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div
-                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                            <div>
-                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Language Server (LSP)</h4>
-                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    Integrates with editors to provide passive syntax/semantic diagnostics, type hover
-                                    details, document highlighting, and semantic tokens.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div
-                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                            <div>
-                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Standard Library</h4>
-                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    Features a robust, built-in standard library (stdlib) written in Go, providing a
-                                    rich collection of ready-to-use packages designed to accelerate pipeline
-                                    development.
+                                    An official Language Server Protocol implementation exposes real-time syntax
+                                    checking, hover signatures, inlay parameter types, and semantic highlights to IDE
+                                    editors.
                                 </p>
                             </div>
                         </div>

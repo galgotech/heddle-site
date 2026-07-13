@@ -82,6 +82,7 @@ pre, code, img, svg {
 }
 
 /* CSS-only Tabs logic */
+#tab-pattern:checked ~ .tabs-buttons label[for="tab-pattern"],
 #tab-reactive:checked ~ .tabs-buttons label[for="tab-reactive"],
 #tab-prql:checked ~ .tabs-buttons label[for="tab-prql"],
 #tab-error:checked ~ .tabs-buttons label[for="tab-error"] {
@@ -91,6 +92,7 @@ pre, code, img, svg {
     box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.3);
 }
 
+#tab-pattern:checked ~ .tabs-contents #content-pattern,
 #tab-reactive:checked ~ .tabs-contents #content-reactive,
 #tab-prql:checked ~ .tabs-contents #content-prql,
 #tab-error:checked ~ .tabs-contents #content-error {
