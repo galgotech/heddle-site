@@ -400,11 +400,11 @@ http_server = http.server {
                 <div class="w-full max-w-7xl mx-auto px-4 md:px-8">
                     <div class="text-center mb-16 max-w-3xl mx-auto">
                         <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">
-                            Compiler & VM Architecture
+                            Compiler and Runtime Architecture
                         </h2>
                         <p class="mt-4 text-lg md:text-xl text-slate-600 leading-relaxed">
-                            The Heddle framework is built as a complete compiler and virtual machine execution stack
-                            written entirely in Go, adhering to Clean Architecture principles.
+                            The Heddle framework is built as a complete compiler and reactive runtime execution stack
+                            written entirely in Go.
                         </p>
                     </div>
 
@@ -413,11 +413,10 @@ http_server = http.server {
                             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    GoASTParser Interop</h4>
+                                    Lexer & Parser</h4>
                                 <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    The frontend semantic analyzer parses Go companion sources using standard AST
-                                    libraries. It maps snake_case Heddle instructions to PascalCase Go targets,
-                                    resolving types before execution.
+                                    Converts Heddle source text into a stream of tokens, which the parser processes into
+                                    a strongly-typed Abstract Syntax Tree (AST) representing logic and variables.
                                 </p>
                             </div>
                         </div>
@@ -426,23 +425,10 @@ http_server = http.server {
                             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Columnar Frame Buffers</h4>
+                                    Semantic Analysis</h4>
                                 <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    Data flows through Heddle in columnar `Frame` segments, wrapping
-                                    `NestedListContainer` elements. Slices and structs transition smoothly to Go
-                                    representation without duplicate allocations.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div
-                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                            <div>
-                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">Memory
-                                    Arenas</h4>
-                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    VM query processing runs within dedicated memory-isolated arenas. Slices and tables
-                                    are allocated, utilized, and garbage-collected in bulk to minimize GC pauses.
+                                    Performs type inference and validation on the AST, resolving native Go function
+                                    signatures and package metadata to guarantee type safety.
                                 </p>
                             </div>
                         </div>
@@ -451,10 +437,10 @@ http_server = http.server {
                             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Stack-Based Virtual Machine</h4>
+                                    Codegen & IR</h4>
                                 <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    A fast, thread-safe virtual machine interprets linearized IR bytecode. It handles
-                                    concurrent timer tick sequences, background event loops, and HTTP listeners cleanly.
+                                    Translates the validated AST into an Intermediate Representation (IR) and compiles
+                                    it down to idiomatic Go target code for native compiler optimization.
                                 </p>
                             </div>
                         </div>
@@ -463,11 +449,35 @@ http_server = http.server {
                             class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                             <div>
                                 <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
-                                    Complete LSP Integration</h4>
+                                    Runtime Engine</h4>
                                 <p class="text-slate-600 text-sm md:text-base leading-relaxed">
-                                    An official Language Server Protocol implementation exposes real-time syntax
-                                    checking, hover signatures, inlay parameter types, and semantic highlights to IDE
-                                    editors.
+                                    The Heddle framework is built as a complete compiler and reactive runtime execution
+                                    stack written entirely in Go.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
+                                    Language Server (LSP)</h4>
+                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                                    Integrates with editors to provide passive syntax/semantic diagnostics, type hover
+                                    details, document highlighting, and semantic tokens.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
+                                    Standard Library</h4>
+                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                                    Features a robust, built-in standard library (stdlib) written in Go, providing a
+                                    rich collection of ready-to-use packages designed to accelerate pipeline
+                                    development.
                                 </p>
                             </div>
                         </div>
