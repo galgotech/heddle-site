@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heddle: Orchestrate Logic. With a Functional Flow.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-slate-800 antialiased">
+    <!-- Main layout wrapper -->
+    <div class="min-h-screen flex flex-col overflow-x-hidden">
+
+        <!-- Header -->
+        <header class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+            <!-- Checkbox Hack for Mobile Menu Toggle -->
+            <input type="checkbox" id="mobile-menu-toggle" class="hidden peer">
+
+            <div class="w-full max-w-7xl mx-auto px-4 md:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <a href="./" class="flex items-center text-lg md:text-2xl font-black text-slate-900">
+                        <img src="logo.png" alt="Heddle Logo" class="h-8 w-8 mr-1" />
+                        <span>eddle</span>
+                    </a>
+
+                    <!-- Desktop Navigation Links -->
+                    <nav class="hidden md:flex items-center gap-6 font-medium text-slate-700">
+                        <a href="mailto:contact@fhub.dev" class="hover:text-teal-600 transition-colors">Contact</a>
+                        <a href="https://github.com/galgotech/heddle-lang" target="_blank"
+                            class="flex items-center gap-1 hover:text-teal-600 transition-colors">
+                            <!-- GitHub Icon -->
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z">
+                                </path>
+                            </svg>
+                            <span>GitHub</span>
+                        </a>
+                    </nav>
+
+                    <!-- Mobile Menu Button -->
+                    <label for="mobile-menu-toggle"
+                        class="md:hidden p-2 -mr-2 text-slate-700 cursor-pointer select-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation Menu (Controlled via the checkbox peer state) -->
+            <div class="hidden peer-checked:block md:hidden bg-white border-t border-slate-200 shadow-xl">
+                <nav class="flex flex-col items-center gap-6 p-8 text-lg font-semibold text-slate-700">
+                    <a href="mailto:contact@fhub.dev" class="hover:text-teal-600 transition-colors">Contact</a>
+                    <a href="https://github.com/galgotech/heddle-lang" target="_blank"
+                        class="flex items-center gap-1 hover:text-teal-600 transition-colors">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z">
+                            </path>
+                        </svg>
+                        <span>GitHub</span>
+                    </a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow">
+
+            <!-- Hero Section -->
+            <div class="relative overflow-hidden bg-white text-slate-800">
+                <!-- Ambient Background Glows -->
+                <div
+                    class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-teal-500/5 blur-[120px] pointer-events-none">
+                </div>
+                <div
+                    class="absolute top-[30%] right-[-10%] w-[45%] h-[45%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none">
+                </div>
+
+                <section class="w-full max-w-7xl mx-auto px-4 md:px-8 relative pt-16 md:pt-32 pb-16">
+                    <div class="text-center max-w-4xl mx-auto">
+                        <h1
+                            class="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight text-slate-900 leading-[1.05] mb-6">
+                            Orchestrate logic. <br />
+                            <span class="bg-gradient-to-r from-teal-600 to-indigo-600 bg-clip-text text-transparent">
+                                Designed for readability.
+                            </span>
+                        </h1>
+
+                        <p class="text-lg md:text-xl text-slate-600 leading-relaxed mb-10 max-w-2xl mx-auto">
+                            Heddle is a hybrid-paradigm language designed to orchestrate logic.
+                            Seamlessly combining functional and imperative paradigms and is built to
+                            be easy to read and modify for both humans and AI agents.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- CSS Tabs Interactive Playground Section -->
+                <section class="w-full max-w-7xl mx-auto px-4 md:px-8 mb-24">
+                    <div
+                        class="bg-slate-950 py-16 md:py-24 px-6 md:px-12 rounded-[2.5rem] text-slate-100 border border-slate-900 shadow-2xl relative overflow-hidden">
+                        <div
+                            class="absolute inset-0 bg-[linear-gradient(to_right,#1f293708_1px,transparent_1px),linear-gradient(to_bottom,#1f293708_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none opacity-50">
+                        </div>
+                        <div
+                            class="absolute top-[20%] left-[30%] w-[300px] h-[300px] rounded-full bg-teal-500/10 blur-[80px] pointer-events-none">
+                        </div>
+
+                        <div class="mb-12 text-center relative z-10">
+                            <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+                                How Heddle Works
+                            </h2>
+                            <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                                Heddle's syntax is designed to be expressive and concise, separating
+                                <strong>what to do</strong> (functional) from <strong>how to do it</strong>
+                                (imperative).
+                                It is based on simple declarations, pipes, pattern matching, PRQL, and row-safe error
+                                handling.
+
+                            </p>
+                        </div>
+
+                        <!-- CSS Tab Inputs (Hidden) -->
+                        <input type="radio" id="tab-reactive" name="playground-tabs" checked class="hidden">
+                        <input type="radio" id="tab-prql" name="playground-tabs" class="hidden">
+                        <input type="radio" id="tab-error" name="playground-tabs" class="hidden">
+
+                        <!-- Tab Buttons Label Bar -->
+                        <div
+                            class="tabs-buttons flex gap-2 justify-center mb-10 overflow-x-auto pb-2 scrollbar-hide relative z-10 px-4">
+                            <label for="tab-reactive"
+                                class="cursor-pointer px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap border bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-900 select-none">
+                                API Endpoint
+                            </label>
+                            <label for="tab-prql"
+                                class="cursor-pointer px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap border bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-900 select-none">
+                                PRQL Relational Join
+                            </label>
+                            <label for="tab-error"
+                                class="cursor-pointer px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap border bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-900 select-none">
+                                Failsafe Error Trap
+                            </label>
+                        </div>
+
+                        <!-- Dual Code Panels Container -->
+                        <div class="tabs-contents relative z-10">
+
+                            <!-- TAB 1: Reactive API Endpoint -->
+                            <div id="content-reactive" class="hidden grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                                <!-- Left: Heddle Logic -->
+                                <div class="flex flex-col min-w-0">
+                                    <div
+                                        class="flex items-center justify-between px-5 py-3.5 bg-slate-900 text-slate-300 rounded-t-xl border-t border-x border-slate-800">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                                            <span
+                                                class="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Heddle
+                                                Code</span>
+                                        </div>
+                                        <span class="text-xs font-mono text-slate-500">main.he</span>
+                                    </div>
+                                    <div
+                                        class="flex-grow border-x border-b border-slate-800 rounded-b-xl overflow-hidden bg-slate-900/40 p-5 font-mono text-sm leading-relaxed text-slate-300 overflow-x-auto">
+                                        <pre><code><span class="text-teal-400">import</span> <span class="text-indigo-300">"math"</span>
+<span class="text-teal-400">import</span> <span class="text-indigo-300">"io"</span>
+<span class="text-teal-400">import</span> <span class="text-indigo-300">"net/http"</span>
+<span class="text-teal-400">import</span> <span class="text-indigo-300">"company"</span>
+
+<span class="text-slate-500">// Define a reactive HTTP server resource</span>
+http_server = http.server {
+  host: <span class="text-indigo-300">"localhost"</span>,
+  port: <span class="text-amber-400">8080</span>
+}
+
+<span class="text-teal-400">flow</span> main {
+  <span class="text-slate-500">// Bind standard HTTP routing as interactive streams</span>
+  http_server.get(path: <span class="text-indigo-300">"/process"</span>) {
+    ok(request) {
+      <span class="text-slate-500">// Process bodies through declarative pipelines</span>
+      response_data = request.body 
+        | company.to_upper()
+      response_data | io.print()
+
+      <span class="text-teal-400">return</span> { status: <span class="text-amber-400">200</span>, body: response_data }
+    }
+  }
+
+  <span class="text-slate-500">// Linear flow piping</span>
+  <span class="text-indigo-300">"heddle pipeline"</span> | company.to_upper() | io.print()
+  <span class="text-amber-400">24.85</span> | company.round() | io.print()
+}</code></pre>
+                                    </div>
+                                </div>
+                                <!-- Right: Go Companion -->
+                                <div class="flex flex-col min-w-0">
+                                    <div
+                                        class="flex items-center justify-between px-5 py-3.5 bg-slate-900 text-slate-300 rounded-t-xl border-t border-x border-slate-800">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                                            <span
+                                                class="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Go
+                                                Code</span>
+                                        </div>
+                                        <span class="text-xs font-mono text-slate-500">company.go</span>
+                                    </div>
+                                    <div
+                                        class="flex-grow border-x border-b border-slate-800 rounded-b-xl overflow-hidden bg-slate-900/40 p-5 font-mono text-sm leading-relaxed text-slate-300 overflow-x-auto">
+                                        <pre><code><span class="text-teal-400">package</span> company
+
+<span class="text-teal-400">import</span> (
+	<span class="text-indigo-300">"strings"</span>
+	<span class="text-indigo-300">"math"</span>
+)
+
+<span class="text-teal-400">func</span> ToUpper(s <span class="text-teal-300">string</span>) <span class="text-teal-300">string</span> {
+	<span class="text-teal-400">return</span> strings.ToUpper(s)
+}
+
+<span class="text-teal-400">func</span> Round(val <span class="text-teal-300">float64</span>) <span class="text-teal-300">float64</span> {
+	<span class="text-teal-400">return</span> math.Round(val)
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 2: PRQL Relational Join -->
+                            <div id="content-prql" class="hidden grid-cols-1 gap-8 items-stretch max-w-3xl mx-auto">
+                                <!-- Left: Heddle Logic -->
+                                <div class="flex flex-col min-w-0">
+                                    <div
+                                        class="flex items-center justify-between px-5 py-3.5 bg-slate-900 text-slate-300 rounded-t-xl border-t border-x border-slate-800">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                                            <span
+                                                class="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Heddle
+                                                Code</span>
+                                        </div>
+                                        <span class="text-xs font-mono text-slate-500">main.he</span>
+                                    </div>
+                                    <div
+                                        class="flex-grow border-x border-b border-slate-800 rounded-b-xl overflow-hidden bg-slate-900/40 p-5 font-mono text-sm leading-relaxed text-slate-300 overflow-x-auto">
+                                        <pre><code><span class="text-teal-400">flow</span> main {
+  users = [
+    { id: <span class="text-amber-400">1</span>, name: <span class="text-indigo-300">"Alice"</span>, active: <span class="text-teal-400">true</span> },
+    { id: <span class="text-amber-400">2</span>, name: <span class="text-indigo-300">"Bob"</span>, active: <span class="text-teal-400">false</span> }
+  ]
+  
+  purchases = [
+    { user_id: <span class="text-amber-400">1</span>, item: <span class="text-indigo-300">"Laptop"</span>, price: <span class="text-amber-400">1200.0</span> },
+    { user_id: <span class="text-amber-400">2</span>, item: <span class="text-indigo-300">"Phone"</span>,  price: <span class="text-amber-400">800.0</span> }
+  ]
+
+  <span class="text-slate-500">// Native PRQL-inspired query syntax executing in-memory over Frame columns</span>
+  active_purchases = (
+    <span class="text-teal-400">from</span> users
+    <span class="text-teal-400">filter</span> active == <span class="text-teal-400">true</span>
+    <span class="text-teal-400">join</span> purchases [id == user_id]
+    <span class="text-teal-400">select</span> { id, name, item, price }
+  )
+  
+  active_purchases | io.print()
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 3: Failsafe Error Trap -->
+                            <div id="content-error" class="hidden grid-cols-1 gap-8 items-stretch max-w-3xl mx-auto">
+                                <!-- Left: Heddle Logic -->
+                                <div class="flex flex-col min-w-0">
+                                    <div
+                                        class="flex items-center justify-between px-5 py-3.5 bg-slate-900 text-slate-300 rounded-t-xl border-t border-x border-slate-800">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                                            <span
+                                                class="text-xs font-mono font-bold tracking-wider uppercase text-slate-400">Heddle
+                                                Code</span>
+                                        </div>
+                                        <span class="text-xs font-mono text-slate-500">main.he</span>
+                                    </div>
+                                    <div
+                                        class="flex-grow border-x border-b border-slate-800 rounded-b-xl overflow-hidden bg-slate-900/40 p-5 font-mono text-sm leading-relaxed text-slate-300 overflow-x-auto">
+                                        <pre><code><span class="text-slate-500">// 1. Declare an isolated error handler</span>
+<span class="text-teal-400">handler</span> log_error (err) {
+  err | io.print()
+}
+
+<span class="text-teal-400">flow</span> main {
+  json_string = <span class="text-indigo-300">"invalid json{"</span>
+
+  <span class="text-slate-500">// 2. Safely capture row-level errors without crashing the flow</span>
+  user_frame = json_string 
+    | json.unmarshal() <span class="text-teal-400">?</span> log_error()
+    | io.print()
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Features & Philosophy Section -->
+            <section class="w-full max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24 border-t border-slate-100">
+                <div class="text-center mb-16 max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                        Clean by design. <br />
+                        <span class="text-indigo-600">Built for robustness.</span>
+                    </h2>
+                    <p class="mt-4 text-lg md:text-xl text-slate-600 leading-relaxed">
+                        Heddle enforces <strong>Clean Architecture</strong> by design, establishing clear boundaries
+                        between core
+                        business use cases and technical implementation details,
+                        creating a <strong>Screaming Architecture</strong> centered on business logic.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div
+                        class="bg-slate-50 p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xl mb-6 shadow-sm">
+                                ⇄
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Logical Orchestration</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Simplifies code design by decoupling orchestration flow from imperative execution,
+                                making pipeline logic clean and easy to maintain.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xl mb-6 shadow-sm">
+                                ⛁
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Columnar Layouts</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Organizes data pipeline values in columnar structures internally.
+                                Write imperative code while effortlessly modeling
+                                and extending custom types.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xl mb-6 shadow-sm">
+                                ⌸
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">In-Memory PRQL</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Relational queries (joins, filters, projections) directly on variables. Generate
+                                new types on the fly with on-demand columnar joins.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-slate-50 p-8 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center font-bold text-xl mb-6 shadow-sm">
+                                ☠
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Row-Level Failure Isolation</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Redirects errors from individual records to specialized traps, acting like a built-in
+                                Dead Letter Queue for lines without stopping pipeline execution.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Compiler & Architecture Details Grid Section -->
+            <section class="bg-slate-50 border-y border-slate-200 py-16 md:py-24">
+                <div class="w-full max-w-7xl mx-auto px-4 md:px-8">
+                    <div class="text-center mb-16 max-w-3xl mx-auto">
+                        <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">
+                            Compiler & VM Architecture
+                        </h2>
+                        <p class="mt-4 text-lg md:text-xl text-slate-600 leading-relaxed">
+                            The Heddle framework is built as a complete compiler and virtual machine execution stack
+                            written entirely in Go, adhering to Clean Architecture principles.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div
+                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
+                                    GoASTParser Interop</h4>
+                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                                    The frontend semantic analyzer parses Go companion sources using standard AST
+                                    libraries. It maps snake_case Heddle instructions to PascalCase Go targets,
+                                    resolving types before execution.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
+                                    Columnar Frame Buffers</h4>
+                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                                    Data flows through Heddle in columnar `Frame` segments, wrapping
+                                    `NestedListContainer` elements. Slices and structs transition smoothly to Go
+                                    representation without duplicate allocations.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">Memory
+                                    Arenas</h4>
+                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                                    VM query processing runs within dedicated memory-isolated arenas. Slices and tables
+                                    are allocated, utilized, and garbage-collected in bulk to minimize GC pauses.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
+                                    Stack-Based Virtual Machine</h4>
+                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                                    A fast, thread-safe virtual machine interprets linearized IR bytecode. It handles
+                                    concurrent timer tick sequences, background event loops, and HTTP listeners cleanly.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <h4 class="text-lg font-bold text-slate-900 mb-2 border-b border-slate-100 pb-2">
+                                    Complete LSP Integration</h4>
+                                <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+                                    An official Language Server Protocol implementation exposes real-time syntax
+                                    checking, hover signatures, inlay parameter types, and semantic highlights to IDE
+                                    editors.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-slate-400">
+            <div class="w-full max-w-7xl mx-auto px-4 md:px-8 py-12">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <p class="text-sm md:text-base">&copy; 2026 Heddle Project Contributors</p>
+                    <div class="flex gap-6">
+                        <!-- Navigation or social links could go here if needed -->
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
